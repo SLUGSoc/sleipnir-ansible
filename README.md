@@ -2,8 +2,10 @@
 
 This is a set of [Ansible](https://docs.ansible.com) Playbooks designed to secure Sleipnir's SSH server. The Playbooks available are as follows:
 
-- [`add_user.yaml`][/add_user.yaml]: creates a new posix account with the given credentials
-- [`del_user.yaml`][/del_user.yaml]: deletes an existing posix account
+- [`add_user.yaml`](/add_user.yaml): creates a new posix account with the given credentials
+- [`del_user.yaml`](/del_user.yaml): deletes an existing posix account
+
+While these Playbooks are intended specifically Sleipnir, they will work on pretty much any modern Debian-based server.
 
 ## Installing Ansible
 
@@ -20,8 +22,10 @@ All the Playbooks in this repo can be configured with the Ansible Inventory at `
 - `ansible_host`: The address of the server to connect to and run the Playbook on.
 - `ansible_port`: The port to use when SSHing into the server.
 - `ansible_user`: The username that Ansible will login via SSH as on the server.
+- `ansible_ssh_private_key_file`: Local path to the SSH private key used to connect to a server.
 - `key_algorithm`: The algorithm used to generate key-pairs. In general, `ed25519` is the most secure option on modern systems.
-- `key_size`: The size of the key to generate. See below for lengths supported be your `key_algorithm`.
+- `key_length`: The size of the key to generate. See below for lengths supported be your `key_algorithm`.
+- `sudoers_group`: The posix group that gives users access to sudo.
 
 ## Using a Playbook
 
@@ -31,7 +35,7 @@ All the Playbooks in this repo can be configured with the Ansible Inventory at `
 ansible-playbook add_user.yaml --ask-become-pass
 ```
 
-This Playbook will create a new user with a given username & password.
+This Playbook will ask for a username, password and whether the new user should have sudo access and then create that user. If a user already exists with the given username, then the only thing that will change is whether it has sudo access.
 
 ### Deleting a User
 
@@ -39,7 +43,7 @@ This Playbook will create a new user with a given username & password.
 ansible-playbook del_user.yaml --ask-become-pass
 ```
 
-This Playbook will list all the users on the server and delete the chosen one.
+This Playbook will ask for the username of a user to delete. If the user doesn't exist, nothing will happen.
 
 ## Choosing a Secure Key
 
