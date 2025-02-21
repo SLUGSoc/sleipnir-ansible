@@ -1,0 +1,34 @@
+---
+- name: Create a new user
+  hosts: all
+  vars_prompt:
+    - name: username
+      prompt: "username"
+      private: false
+
+    - name: password
+      prompt: "password"
+      private: true
+      confirm: true # User will be asked to enter it again to confirm
+      # Hashes the password before the Playbook receives it
+      encrypt: sha512_crypt
+      salt_size: 7
+
+    - name: sudoer
+      prompt: "sudoer? [y/n]"
+      private: false
+
+  tasks:
+    - name: Create the new user
+      ansible.builtin.user:
+        create_home: true
+        name: "{{ username }}"
+        password: "{{ password }}"
+
+    - name: Add user to sudoers group
+      ansible.builtin.user:
+        append: true
+        name: "{{ username }}"
+        groups:
+          - "{{ sudoers_group }}"
+      when: sudoer | lower == "y"

@@ -1,0 +1,13 @@
+---
+- name: Delete an existing user
+  hosts: all
+  vars_prompt:
+    - name: username
+      prompt: "username"
+      private: false
+
+  tasks:
+    - name: Delete the user
+      ansible.builtin.user:
+        name: "{{ username }}"
+        state: absent
