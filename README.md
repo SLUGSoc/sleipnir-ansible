@@ -2,9 +2,9 @@
 
 This is a set of [Ansible](https://docs.ansible.com) Playbooks designed to secure Sleipnir's SSH server. The Playbooks available are as follows:
 
-- [`add_user.yaml`](/add_user.yaml): creates a new posix account with the given credentials
-- [`del_user.yaml`](/del_user.yaml): deletes an existing posix account
-- [`gen_key.yaml`](/gen_key.yaml): generates a new SSH key-pair on your local machine
+- [`admin/add_user.yaml`](/admin/add_user.yaml): creates a new posix account with the given credentials
+- [`admin/del_user.yaml`](/admin/del_user.yaml): deletes an existing posix account
+- [`user/gen_key.yaml`](/user/gen_key.yaml): generates a new SSH key-pair on your local machine
 
 While these Playbooks are intended specifically Sleipnir, they will work on pretty much any modern Debian-based server.
 
@@ -26,14 +26,14 @@ Playbooks that interact with a remote server must be configured with the Ansible
 - `ansible_ssh_private_key_file`: Local path to the SSH private key used to connect to a server.
 - `sudoers_group`: The posix group that gives users access to sudo.
 
-If you are just using [`gen_key.yaml`](/gen_key.yaml) then you can just rename [`example.inventory.yaml`](/example.inventory.yaml) to `inventory.yaml`.
+If you are just using [`user/gen_key.yaml`](/user/gen_key.yaml) then you can just rename [`example.inventory.yaml`](/example.inventory.yaml) to `inventory.yaml`.
 
 ## Using a Playbook
 
 ### Generating an SSH Key-pair
 
 ```shell
-ansible-playbook gen_key.yaml
+ansible-playbook user/gen_key.yaml
 ```
 
 When using this Playbook, you'll be asked to enter a variety of information about the key you want to generate. It will then create your new key-pair locally and store it at the path you specified (the public key will have the `.pub` extension appended to the path you gave).
@@ -43,7 +43,7 @@ The Playbook should make a decent attempt to guide you through the process and p
 ### Creating a User
 
 ```shell
-ansible-playbook add_user.yaml --ask-become-pass
+ansible-playbook admin/add_user.yaml --ask-become-pass
 ```
 
 This Playbook will ask for a username, password and whether the new user should have sudo access and then create that user. If a user already exists with the given username, then the only thing that will change is whether it has sudo access.
@@ -51,7 +51,7 @@ This Playbook will ask for a username, password and whether the new user should 
 ### Deleting a User
 
 ```shell
-ansible-playbook del_user.yaml --ask-become-pass
+ansible-playbook admin/del_user.yaml --ask-become-pass
 ```
 
 This Playbook will ask for the username of a user to delete. If the user doesn't exist, nothing will happen.
