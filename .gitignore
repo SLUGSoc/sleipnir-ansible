@@ -2,3 +2,4 @@ inventory.yaml
 .venv/
 .idea/
 .vscode/
+out/

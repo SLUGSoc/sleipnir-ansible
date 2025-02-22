@@ -1,0 +1,104 @@
+---
+- name: Generate a new SSH key-pair
+  # Runs this playbook on the user's local machine
+  # Ansible won't connect to the server at all
+  hosts: localhost
+  connection: local
+
+  vars:
+    # List of algorithms that OpenSSH can create, but that require a hardware security key (e.g. YubiKey)
+    # I don't have a security key to test with, so for now this Playbook won't create them
+    sk_algorithms:
+      - ecdsa-sk
+      - ed25519-sk
+
+    # These algorithms are technically valid, but are old and insecure, so should not be used under any circumstances
+    deprecated_algorithms:
+      - dsa
+
+    # Map of valid algorithms this Playbook can create and their supported lengths
+    valid_algorithms:
+      ed25519:
+        - "256"
+      rsa:
+        - "1024"
+        - "2048"
+        - "3072"
+        - "4096"
+      ecdsa:
+        - "256"
+        - "384"
+        - "521"
+
+  vars_prompt:
+    - name: algorithm
+      prompt: "algorithm (options: {{ valid_algorithms.keys() | join(', ') }})"
+      private: false
+      default: "ed25519"
+
+    - name: length
+      prompt: "length"
+      private: false
+      default: "256"
+
+    - name: comment
+      prompt: "comment (e.g. macbook@jackgledhill)"
+      private: false
+
+    - name: passphrase
+      prompt: "passphrase (optional)"
+      confirm: true
+
+    - name: path
+      prompt: "path"
+      private: false
+      default: "~/.ssh/id_sleipnir"
+
+  pre_tasks:
+    - name: Refuse algorithms requiring a security key
+      ansible.builtin.fail:
+        msg: >-
+          The {{ algorithm }} algorithm requires a hardware security key (e.g. YubiKey). If you want to use this, you'll have to do so manually via ssh-keygen.
+      when: algorithm | lower in sk_algorithms
+      run_once: true
+
+    - name: Refuse to use deprecated algorithms
+      ansible.builtin.fail:
+        msg: >-
+          {{ algorithm }} keys have been deprecated and are considered insecure. If you really want to create one, please use ssh-keygen instead.
+      when: algorithm | lower in deprecated_algorithms
+      run_once: true
+
+    - name: Check if given algorithm is valid
+      ansible.builtin.fail:
+        msg: >-
+          The algorithm {{ algorithm }} is not valid.
+          Valid options are: {{ valid_algorithms.keys() | join(', ') }}
+      when: not algorithm | lower in valid_algorithms.keys()
+      run_once: true
+
+    - name: Check that the chosen algorithm supports the length requested
+      ansible.builtin.fail:
+        msg: >-
+          The {{ algorithm }} algorithm doesn't support keys of length {{ length }}.
+          Valid options are: {{ valid_algorithms[algorithm] | join(', ') }}
+      when: not length in valid_algorithms[algorithm]
+      run_once: true
+
+  tasks:
+    # This assumes the local machine has OpenSSH installed
+    # Linux and macOS should come with OpenSSH Client by default
+    - name: Generate a new SSH key-pair
+      community.crypto.openssh_keypair:
+        comment: "{{ comment }}"
+        passphrase: "{{ passphrase }}"
+        path: "{{ path }}"
+        type: "{{ algorithm | lower }}"
+        size: "{{ length }}"
+        backend: cryptography
+        regenerate: never # Prevents overwriting existing files. Comments can still be changed
+        state: present
+
+    - name: Print public key
+      ansible.builtin.debug:
+        msg: "{{ lookup('ansible.builtin.file', path + '.pub') }}"

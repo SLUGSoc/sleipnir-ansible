@@ -1,6 +1,8 @@
 ---
 - name: Create a new user
   hosts: all
+  become: true
+
   vars_prompt:
     - name: username
       prompt: "username"
@@ -11,8 +13,8 @@
       private: true
       confirm: true # User will be asked to enter it again to confirm
       # Hashes the password before the Playbook receives it
+      # Ansible will auto-generate a random salt of 8 characters
       encrypt: sha512_crypt
-      salt_size: 7
 
     - name: sudoer
       prompt: "sudoer? [y/n]"
