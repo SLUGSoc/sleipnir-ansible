@@ -4,7 +4,13 @@ Hello! **This section is for Sleipnir's admins only**. If you're not an admin (i
 
 ## Inventory Configuration
 
-All the Playbooks here require access to an account with `sudo` permissions.
+All the Playbooks here require access to an account with `sudo` permissions. To use these Playbooks, you'll need to rename `example.inventory.yaml` to `inventory.yaml` and update the following variables:
+
+- `ansible_host`: The address of the server to connect to and run the Playbook on.
+- `ansible_port`: The port to use when SSHing into the server.
+- `ansible_user`: The username that Ansible will login via SSH as on the server.
+- `ansible_ssh_private_key_file`: Local path to the SSH private key used to connect to a server.
+- `sudoers_group`: The posix group that gives users access to sudo.
 
 ## User Management
 
@@ -36,7 +42,7 @@ To avoid potentially bricking a server, none of these Playbooks will let you mod
 ansible-playbook add_key.yaml --ask-become-pass
 ```
 
-You'll be asked to provide the public key and the user to add it to. Alternatively, you can use a URL to a file containing public keys separated by new lines (GitHub exposes every user's public keys at `github.com/<username>.keys`). You can pass a comment override if the keys in the URL don't have helpful comments (the comment will be applied to all keys in the file).
+You'll be asked to provide the public key and the user to add it to. Alternatively, you can use a URL to a file containing public keys separated by new lines (GitHub exposes every user's public keys at `github.com/<username>.keys`).
 
 Currently, there is no way to use a `.pub` file directly. Instead, you'll have to open (or `cat`) the file and copy-paste it into the console, sorry!
 

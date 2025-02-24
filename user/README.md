@@ -6,6 +6,13 @@ This section is for users wanting to manage their own accounts. If you need to m
 
 These Playbooks will work regardless of whether you have `sudo` permissions or not. Your account will need to already have a public key authorised on the server, and the private key available for Ansible to use. If this is not the case, please contact a server admin.
 
+To use these Playbooks, you'll need to rename `example.inventory.yaml` to `inventory.yaml` and update the following variables:
+
+- `ansible_host`: The address of the server to connect to and run the Playbook on.
+- `ansible_port`: The port to use when SSHing into the server.
+- `ansible_user`: The username that Ansible will login via SSH as on the server.
+- `ansible_ssh_private_key_file`: Local path to the SSH private key used to connect to a server.
+
 ## Generating a Key-pair
 
 ```shell

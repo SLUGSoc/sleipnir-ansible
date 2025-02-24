@@ -10,12 +10,10 @@ To use these Playbooks, you must have Ansible installed on your machine (it does
 pip install -r requirements.txt
 ```
 
-## Inventory Configuration
+## Who are you?
 
-Playbooks that interact with a remote server must be configured with the Ansible Inventory at `inventory.yaml` (see [`example.inventory.yaml`](/admin/example.inventory.yaml) for a template). The main variables of interest are:
+![Skyrim Hadvar who are you?](https://i.reddituploads.com/fe7b542862744f68ab04aa907a5decec?fit=max&h=1536&w=1536&s=bc8e867615ad4093eaecdde2367a5323)
 
-- `ansible_host`: The address of the server to connect to and run the Playbook on.
-- `ansible_port`: The port to use when SSHing into the server.
-- `ansible_user`: The username that Ansible will login via SSH as on the server.
-- `ansible_ssh_private_key_file`: Local path to the SSH private key used to connect to a server.
-- `sudoers_group`: The posix group that gives users access to sudo.
+[I am a server admin](admin/README.md): you want to manage users and their public keys
+
+[I am an ordinary user](user/README.md): you want to manage your own public keys
