@@ -1,0 +1,22 @@
+---
+- name: Add a key to the current user's authorized_keys
+  hosts: all
+
+  vars_prompt:
+    - name: key
+      prompt: "public key or url to .pub file"
+      private: false
+
+    - name: comment
+      prompt: "comment (optional)"
+      private: false
+
+  tasks:
+    # Assumes user's authorized_keys file is at ~/.ssh/authorized_keys
+    - name: Add public key to authorized_keys
+      ansible.posix.authorized_key:
+        key: "{{ key }}"
+        user: "{{ ansible_user }}"
+        comment: "{{ comment }}"
+        manage_dir: true # Ansible will sort out permissions and create directories if needed
+        state: present

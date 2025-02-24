@@ -1,0 +1,16 @@
+---
+- name: Delete current user's public key
+  hosts: all
+
+  vars_prompt:
+    - name: key
+      prompt: "public key"
+      private: false
+
+  tasks:
+    - name: Delete the key from authorized_keys
+      ansible.posix.authorized_key:
+        key: "{{ key }}"
+        user: "{{ ansible_user }}"
+        manage_dir: true # Ansible will sort out permissions and create directories if needed
+        state: absent

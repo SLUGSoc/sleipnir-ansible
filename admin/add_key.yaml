@@ -1,0 +1,45 @@
+---
+- name: Add a new key to a user's authorized_keys
+  hosts: all
+  become: true
+
+  vars:
+    root_username: "root"
+
+  vars_prompt:
+    - name: username
+      prompt: "username"
+      private: false
+
+    - name: key
+      prompt: "public key or url to .pub file"
+      private: false
+
+    - name: comment
+      prompt: "comment"
+      private: false
+
+  pre_tasks:
+    - name: Don't allow modifying current user's keys
+      ansible.builtin.fail:
+        msg: >-
+          To avoid the risk of bricking a server, you can't use this Playbook to modify keys for the user Ansible logs in as.
+          If you really need to do this, please do it manually or use user/add_key.yaml instead.
+      when: username | lower == ansible_user
+
+    - name: Refuse to modify root keys
+      ansible.builtin.fail:
+        msg: >-
+          You can't modify the root account's authorised keys.
+      when: username | lower == root_username
+
+  tasks:
+    # Assumes user's authorized_keys file is at ~/.ssh/authorized_keys
+    # Cases where the path is different are few and far between
+    - name: Add public key to authorized_keys
+      ansible.posix.authorized_key:
+        key: "{{ key }}"
+        user: "{{ username }}"
+        comment: "{{ comment }}"
+        manage_dir: true # Ansible will sort out permissions and create directories if needed
+        state: present
