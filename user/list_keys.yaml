@@ -6,7 +6,7 @@
     # Assumes we're using ~/.ssh/authorized_keys
     - name: Read authorized_keys file
       ansible.builtin.slurp:
-        src: "{{ lookup('env', 'HOME') }}/.ssh/authorized_keys"
+        src: "~/.ssh/authorized_keys"
       register: file
 
     - name: List public keys
