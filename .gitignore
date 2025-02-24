@@ -1,4 +1,5 @@
-inventory.yaml
+admin/inventory.yaml
+user/inventory.yaml
 .venv/
 .idea/
 .vscode/

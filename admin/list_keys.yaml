@@ -1,0 +1,27 @@
+---
+- name: Get a user's public keys
+  hosts: all
+  become: true
+
+  vars_prompt:
+    - name: username
+      prompt: "username"
+      private: false
+
+  tasks:
+    - name: Get user info from /etc/passwd
+      ansible.builtin.getent:
+        database: passwd
+        key: "{{ username }}"
+        split: ":"
+
+    # Assumes we're using ~/.ssh/authorized_keys
+    # /etc/passwd stores user data in the format username:x:uid:gid:full_name:home_dir:shell
+    - name: Read authorized_keys file
+      ansible.builtin.slurp:
+        src: "{{ getent_passwd[username][4] }}/.ssh/authorized_keys"
+      register: file
+
+    - name: List public keys
+      ansible.builtin.debug:
+        msg: "{{ file['content'] | b64decode | split('\n') }}"

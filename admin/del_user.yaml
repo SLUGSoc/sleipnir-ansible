@@ -3,10 +3,27 @@
   hosts: all
   become: true
 
+  vars:
+    root_username: "root"
+
   vars_prompt:
     - name: username
       prompt: "username"
       private: false
+
+  pre_tasks:
+    - name: Don't delete self
+      ansible.builtin.fail:
+        msg: >-
+          You can't use this Playbook to delete the account Ansible is logged in as.
+          Please do so manually or by using a different account with sudo permissions.
+      when: username | lower == ansible_user
+
+    - name: Refuse to delete root
+      ansible.builtin.fail:
+        msg: >-
+          Don't be silly, you can't delete the root account.
+      when: username | lower == root_username
 
   tasks:
     - name: Delete the user

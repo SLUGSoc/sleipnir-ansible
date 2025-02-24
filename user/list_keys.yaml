@@ -1,0 +1,14 @@
+---
+- name: List user's public keys
+  hosts: all
+
+  tasks:
+    # Assumes we're using ~/.ssh/authorized_keys
+    - name: Read authorized_keys file
+      ansible.builtin.slurp:
+        src: "{{ lookup('env', 'HOME') }}/.ssh/authorized_keys"
+      register: file
+
+    - name: List public keys
+      ansible.builtin.debug:
+        msg: "{{ file['content'] | b64decode | split('\n') }}"
