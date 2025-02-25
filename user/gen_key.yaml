@@ -6,8 +6,8 @@
   connection: local
 
   vars:
-    # List of algorithms that OpenSSH can create, but that require a hardware security key (e.g. YubiKey)
-    # I don't have a security key to test with, so for now this Playbook won't create them
+    # These algorithms are used to generate SSH keys directly onto a security key (like YubiKey)
+    # Since this can be a bit of a complex operation, users will be told to do this manually
     sk_algorithms:
       - ecdsa-sk
       - ed25519-sk

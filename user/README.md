@@ -73,3 +73,7 @@ There are various different algorithms available through OpenSSH when generating
 ### Key Length
 
 There are very few reasons to use a smaller key length, barring a *very* small impact to latency and login times. You should use the maximum key length supported by your generation algorithm of choice.
+
+### What about Hardware Security Keys?
+
+If you have a hardware security key (e.g. YubiKey), you'll have to generate the key-pair yourself. This is because there's a number of different ways to do this, all with slight technical differences.
