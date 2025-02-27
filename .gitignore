@@ -1,5 +1,5 @@
-admin/inventory.yaml
-user/inventory.yaml
+*inventory.yaml
+!example.inventory.yaml
 .venv/
 .idea/
 .vscode/
