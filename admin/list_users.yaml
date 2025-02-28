@@ -1,0 +1,18 @@
+---
+- name: List all of the non-system users
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Get user info from /etc/passwd
+      ansible.builtin.getent:
+        database: passwd
+        split: ":"
+
+    - name: Filter out disabled/system users
+      ansible.builtin.set_fact:
+        real_users: "{{ getent_passwd | dict2items | rejectattr('value', 'contains', '/usr/sbin/nologin') | rejectattr('value', 'contains', '/bin/false') | rejectattr('value', 'contains', '/bin/sync') | map(attribute='key') }}"
+
+    - name: Print getent output
+      ansible.builtin.debug:
+        var: real_users

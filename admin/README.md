@@ -14,10 +14,18 @@ All the Playbooks here require access to an account with `sudo` permissions. To 
 
 ## User Management
 
+### List all Users
+
+```shell
+ansible-playbook list_users.yaml --ask-become-pass -i inventory.yaml
+```
+
+Lists all the non-system users on the remote server.
+
 ### Create a New User
 
 ```shell
-ansible-playbook add_user.yaml --ask-become-pass
+ansible-playbook add_user.yaml --ask-become-pass -i inventory.yaml
 ```
 
 This asks for some basic user credentials and then creates a new user on the server. You can optionally give this new user `sudo` permissions.
@@ -27,7 +35,7 @@ After creating a new user, you'll need to [add a new public key](#add-a-public-k
 ### Delete an Existing User
 
 ```shell
-ansible-playbook del_user.yaml --ask-become-pass
+ansible-playbook del_user.yaml --ask-become-pass -i inventory.yaml
 ```
 
 This will delete an existing user account. It won't allow deleting the `root` account (obviously), or the admin account that Ansible is using.
@@ -39,7 +47,7 @@ To avoid potentially bricking a server, none of these Playbooks will let you mod
 ### Add a Public Key
 
 ```shell
-ansible-playbook add_key.yaml --ask-become-pass
+ansible-playbook add_key.yaml --ask-become-pass -i inventory.yaml
 ```
 
 You'll be asked to provide the public key and the user to add it to. Alternatively, you can use a URL to a file containing public keys separated by new lines (GitHub exposes every user's public keys at `github.com/<username>.keys`).
@@ -49,7 +57,7 @@ Currently, there is no way to use a `.pub` file directly. Instead, you'll have t
 ### Revoke a Public Key
 
 ```shell
-ansible-playbook del_key.yaml --ask-become-pass
+ansible-playbook del_key.yaml --ask-become-pass -i inventory.yaml
 ```
 
 This will revoke a public key from a user's `authorized_keys`. Currently, you will need to specify the public key (minus the comment) exactly in order for Ansible to identify which one to remove. In future, I will try to add a way to identify public keys by their comment instead.
@@ -57,7 +65,7 @@ This will revoke a public key from a user's `authorized_keys`. Currently, you wi
 ### List a User's Keys
 
 ```shell
-ansible-playbook list_keys.yaml --ask-become-pass
+ansible-playbook list_keys.yaml --ask-become-pass -i inventory.yaml
 ```
 
 This will list all of a user's authorised public keys. That's it, pretty self-explanatory.

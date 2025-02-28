@@ -16,7 +16,7 @@ To use these Playbooks, you'll need to rename `example.inventory.yaml` to `inven
 ## Generating a Key-pair
 
 ```shell
-ansible-playbook gen_key.yaml
+ansible-playbook gen_key.yaml -i inventory.yaml
 ```
 
 This will ask you a few questions and then generate a private-public key-pair on your device. You can then [add the public key to your account](#adding-a-key) so that it can be used for logging into Sleipnir.
@@ -26,7 +26,7 @@ This Playbook **runs on your local machine, not on the server**. This way, the p
 ## Adding a Key
 
 ```shell
-ansible-playbook add_key.yaml
+ansible-playbook add_key.yaml -i inventory.yaml
 ```
 
 This will ask you for a public (NOT private) key and then add it to your account's `authorized_keys` file. 
@@ -36,7 +36,7 @@ When asked for a comment, please give something that accurately identifies the d
 ## Revoking a Key
 
 ```shell
-ansible-playbook del_key.yaml
+ansible-playbook del_key.yaml -i inventory.yaml
 ```
 
 As with adding a public key, this Playbook will ask for a key (minus the comment) to remove from your `authorized_keys`. In the future, I hope to add a system that lets you remove keys just by giving the comment.
@@ -46,7 +46,7 @@ As with adding a public key, this Playbook will ask for a key (minus the comment
 ## Listing your Keys
 
 ```shell
-ansible-playbook list_keys.yaml
+ansible-playbook list_keys.yaml -i inventory.yaml
 ```
 
 This will list all the public keys in your `authorized_keys` file. This could be helpful when you want to revoke a key without having to login and open the file manually to check which one it is (which is a bit tedious).
