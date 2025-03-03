@@ -27,6 +27,8 @@
         name: "{{ username }}"
         password: "{{ password }}"
         update_password: on_create
+        shell: /bin/bash
+        state: present
 
     - name: Add user to sudoers group
       ansible.builtin.user:
